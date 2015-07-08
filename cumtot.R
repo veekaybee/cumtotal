@@ -1,4 +1,6 @@
-sv <- read.csv("~/Desktop/ipythondata/sv.csv")
+install.packages("data.table", lib="/Library/Frameworks/R.framework/Versions/3.1/Resources/library")
+
+sv <- read.csv("~/Desktop/cumtotal/sv.csv")
 require(data.table)
 View(sv)
 setDT (sv)
