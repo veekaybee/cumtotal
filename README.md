@@ -222,6 +222,60 @@ View(sv) #view your results
 
 This one is a little trickier because you have to start a database instance..somewhere. Usually, you'll have a dev environment to play around with at work. I have a Digital Ocean droplet that has Postgres installed. 
 
+postgres@data:~$ psql
+postgres=# CREATE SCHEMA employees;
+CREATE SCHEMA
+postgres=#  CREATE TABLE cumtot(company CHAR(50) NOT NULL, month DATE NOT NULL,nemp NUMERIC NOT NULL);
+CREATE TABLE
+postgres=# \d
+```
+         List of relations
+ Schema |  Name  | Type  |  Owner   
+--------+--------+-------+----------
+ public | cumtot | table | postgres
+ ```
+ 
+ Then we copy the data to the table from our file:
+ ```
+ postgres=# copy cumtot FROM '/data/sv.csv' DELIMITER ',' CSV HEADER;
+COPY 9
+```
+In the file, we first have to change the date format because Postgres only takes certain formats http://www.postgresql.org/docs/9.1/static/datatype-datetime.html
 
-The reason this is so annoying is matrix operations. Most data-oriented languages and frameworks see groups of data as matrices, where an entire operation needs to be performed across the matrix (i.e. sum, )
+So what we're importing is: 
 
+```
+Company,Month,NewEmployees
+Hooli,2014-Jan-01,123456
+Hooli,2014-Feb-01,1434
+Hooli,2014-Mar-01,2455
+Pied Piper,2014-Jan-01,1
+Pied Piper,2014-Feb-01,2
+Pied Piper,2014-Mar-01,2
+Raviga,2014-Jan-01,50
+Raviga,2014-Feb-01,48
+Raviga,2014-Mar-01,65
+```
+\d cumtot
+        Table "public.cumtot"
+ Column  |     Type      | Modifiers 
+---------+---------------+-----------
+ company | character(50) | not null
+ month   | date          | not null
+ nemp    | numeric       | not null
+
+
+postgres=# select * from cumtot;
+                      company                       |   month    |  nemp  
+----------------------------------------------------+------------+--------
+ Hooli                                              | 2014-01-01 | 123456
+ Hooli                                              | 2014-02-01 |   1434
+ Hooli                                              | 2014-03-01 |   2455
+ Pied Piper                                         | 2014-01-01 |      1
+ Pied Piper                                         | 2014-02-01 |      2
+ Pied Piper                                         | 2014-03-01 |      2
+ Raviga                                             | 2014-01-01 |     50
+ Raviga                                             | 2014-02-01 |     48
+ Raviga                                             | 2014-03-01 |     65
+
+That was just the gruntwork. Now we get to actually 
